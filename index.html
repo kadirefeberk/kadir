@@ -3,46 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sınav Takip Asistanı</title>
+    <title>Kadir Efe Berk - Ders & Not Paneli</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background-color: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        .sinav-kart { background: #eef2f5; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .kalan-gun { color: #007bff; } .bugun { color: #d9534f; } .gecti { color: #6c757d; }
-        .motivasyon { margin-top: 20px; padding: 12px; background-color: #e3f2fd; border-left: 5px solid #2196f3; border-radius: 4px; font-style: italic; color: #0d47a1; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .box { background: #fff; width: 100%; max-width: 480px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h2 { color: #1e293b; margin-top: 0; font-size: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 8px; }
+        .student-info { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+        .student-info p { margin: 4px 0; color: #475569; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: bold; color: #334155; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        button { width: 100%; background: #0284c7; color: #fff; border: none; padding: 11px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #0369a1; }
+        .result { margin-top: 15px; padding: 12px; border-radius: 6px; display: none; font-weight: bold; text-align: center; }
+        .pass { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .fail { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>📌 Sınav Takip Asistanı</h2>
-    <div id="sinav-listesi"></div>
-    <div class="motivasyon" id="motivasyon-kutu"></div>
+
+<div class="box">
+    <h2>Ders & Not Hesaplama Paneli</h2>
+    
+    <div class="student-info">
+        <p><b>Öğrenci:</b> Kadir Efe Berk</p>
+        <p><b>GitHub:</b> kadirefeberk / kadir</p>
+        <p><b>Proje:</b> İnteraktif Not Hesaplama Sistemi</p>
+    </div>
+
+    <div class="input-group">
+        <label>Vize Notu (%40):</label>
+        <input type="number" id="vize" placeholder="Örn: 65" min="0" max="100">
+    </div>
+
+    <div class="input-group">
+        <label>Final Notu (%60):</label>
+        <input type="number" id="final" placeholder="Örn: 70" min="0" max="100">
+    </div>
+
+    <button onclick="hesapla()">Ortalama Hesapla</button>
+
+    <div id="sonuc" class="result"></div>
 </div>
+
 <script>
-    const sinavlar = [
-        { ders: "Matematik Sınavı", tarih: "2026-06-15" },
-        { ders: "Fizik Sınavı", tarih: "2026-06-18" },
-        { ders: "İngilizce Sınavı", tarih: "2026-06-22" }
-    ];
-    const motivasyonSozleri = [
-        "Bugün yaptığın küçük fedakarlıklar, yarınki başarının temelidir!",
-        "Çalışmak zor gelebilir ama başarmanın verdiği gurur her şeye değer.",
-        "Pes etme! Son düzlüktesin, en iyisini yapabilirsin."
-    ];
-    const listeDiv = document.getElementById("sinav-listesi");
-    const bugun = new Date(); bugun.setHours(0, 0, 0, 0);
-    sinavlar.forEach(item => {
-        const sinavTarihi = new Date(item.tarih);
-        const kalanGun = Math.ceil((sinavTarihi - bugun) / (1000 * 60 * 60 * 24));
-        const kart = document.createElement("div");
-        kart.className = "sinav-kart";
-        let durumText = kalanGun > 0 ? `<span class="kalan-gun">${kalanGun} gün kaldı</span>` : (kalanGun === 0 ? `<span class="bugun">🚨 BUGÜN!</span>` : `<span class="gecti">Geçti</span>`);
-        kart.innerHTML = `<span>${item.ders}</span> ${durumText}`;
-        listeDiv.appendChild(kart);
-    });
-    document.getElementById("motivasyon-kutu").innerText = `💡 "${motivasyonSozleri[Math.floor(Math.random() * motivasyonSozleri.length)]}"`;
+    function hesapla() {
+        const vize = parseFloat(document.getElementById('vize').value);
+        const final = parseFloat(document.getElementById('final').value);
+        const sonucDiv = document.getElementById('sonuc');
+
+        if (isNaN(vize) || isNaN(final)) {
+            alert("Lütfen geçerli notlar girin!");
+            return;
+        }
+
+        const ortalama = (vize * 0.4) + (final * 0.6);
+        sonucDiv.style.display = "block";
+
+        if (ortalama >= 50) {
+            sonucDiv.className = "result pass";
+            sonucDiv.innerHTML = `Ortalama: ${ortalama.toFixed(1)} <br> Durum: GEÇTİ ✅`;
+        } else {
+            sonucDiv.className = "result fail";
+            sonucDiv.innerHTML = `Ortalama: ${ortalama.toFixed(1)} <br> Durum: KALDI ❌`;
+        }
+    }
 </script>
+
 </body>
 </html>
 
